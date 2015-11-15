@@ -1,0 +1,13 @@
+/Users/rachelmuzzelo/git/BorgataNTier2/BorgataBLL/src/main/java/pokerBase/GamePlay.java
+/Users/rachelmuzzelo/git/BorgataNTier2/BorgataBLL/src/main/java/pokerBase/Rule.java
+/Users/rachelmuzzelo/git/BorgataNTier2/BorgataBLL/src/main/java/pokerEnums/eSuit.java
+/Users/rachelmuzzelo/git/BorgataNTier2/BorgataBLL/src/main/java/pokerBase/Deck.java
+/Users/rachelmuzzelo/git/BorgataNTier2/BorgataBLL/src/main/java/pokerBase/Card.java
+/Users/rachelmuzzelo/git/BorgataNTier2/BorgataBLL/src/main/java/pokerEnums/eCardNo.java
+/Users/rachelmuzzelo/git/BorgataNTier2/BorgataBLL/src/main/java/pokerBase/GamePlayPlayerHand.java
+/Users/rachelmuzzelo/git/BorgataNTier2/BorgataBLL/src/main/java/pokerBase/Player.java
+/Users/rachelmuzzelo/git/BorgataNTier2/BorgataBLL/src/main/java/pokerBase/Hand.java
+/Users/rachelmuzzelo/git/BorgataNTier2/BorgataBLL/src/main/java/pokerEnums/eRank.java
+/Users/rachelmuzzelo/git/BorgataNTier2/BorgataBLL/src/main/java/pokerEnums/eHandStrength.java
+/Users/rachelmuzzelo/git/BorgataNTier2/BorgataBLL/src/main/java/pokerEnums/eGame.java
+/Users/rachelmuzzelo/git/BorgataNTier2/BorgataBLL/src/main/java/pokerBase/Table.java
