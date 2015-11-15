@@ -191,7 +191,7 @@ public class PokerTableController {
 			playrule = eGame.TexasHoldEm;
 		}
 		//Rule rle = new Rule(eGame.fromInt(mainApp.getiGameType()));**/
-		Rule rle = new Rule(eGame.FiveStud);
+		Rule rle = new Rule(eGame.fromInt(mainApp.getiGameType()));
 		gme = new GamePlay(rle);
 
 		// Add the seated players to the game

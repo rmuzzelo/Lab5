@@ -2,6 +2,7 @@ package enums;
 
 import java.util.ArrayList;
 
+
 public enum eGame {
 
 	FiveStud(1),
@@ -21,5 +22,27 @@ public enum eGame {
 	
 	public int getGame(){
 		return gameNbr;
+	}
+	
+	public static eGame fromInt(int x){
+		switch(x){
+		case 1:
+			return FiveStud;
+		case 2:
+			return FiveStudOneJoker;
+		case 3:
+			return FiveStudTwoJoker;
+		case 4:
+			return TexasHoldEm;
+		case 5:
+			return Omaha;
+		case 6:
+			return DeucesWild;
+		case 7:
+			return AcesAndEights;
+		case 8:
+			return SevenDraw;	
+		}
+		return null;
 	}
 }

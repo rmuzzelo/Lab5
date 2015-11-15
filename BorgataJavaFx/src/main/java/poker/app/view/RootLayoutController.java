@@ -37,52 +37,34 @@ public class RootLayoutController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 
 	 
-		/**RadioMenuItem item1 = new RadioMenuItem("5 card stud");
+		//Sets Game Type for 5 Card Stud
+		RadioMenuItem item1 = (RadioMenuItem) mnuGame.getItems().get(0);
         item1.selectedProperty().addListener(new ChangeListener(){
             @Override
             public void changed(ObservableValue arg0, Object arg1, Object arg2) {
                mainApp.setiGameType(1);              
             }            
           });
-		
-		
-		mnuGame.getItems().add(item1);
-		
-		
-		
-		CheckMenuItem item2 = new CheckMenuItem("5 card draw");
-        item2.selectedProperty().addListener(new ChangeListener(){
-            @Override
-            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
-               mainApp.setiGameType(2);              
-            }            
-          });
-		
-		
-		mnuGame.getItems().add(item2);
-		
-		CheckMenuItem item4 = new CheckMenuItem("Texas Hold'em");
+        
+        //Sets Game Type for Texas Hold'em
+      	RadioMenuItem item4 = (RadioMenuItem) mnuGame.getItems().get(3);
         item4.selectedProperty().addListener(new ChangeListener(){
-            @Override
-            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
-               mainApp.setiGameType(4);              
+        	@Override
+        	public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+        		mainApp.setiGameType(4);              
             }            
-          });
+         });
 		
-		
-		mnuGame.getItems().add(item4);
-		
-		CheckMenuItem item5 = new CheckMenuItem("Omaha");
+        //Sets Game Type for Omaha
+      	RadioMenuItem item5 = (RadioMenuItem) mnuGame.getItems().get(4);
         item5.selectedProperty().addListener(new ChangeListener(){
-            @Override
-            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
-               mainApp.setiGameType(5);              
+        	@Override
+        	public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+        		mainApp.setiGameType(5);              
             }            
-          });
+         });
 		
-		
-		mnuGame.getItems().add(item5);**/
-		
+        
 		
 	}
     

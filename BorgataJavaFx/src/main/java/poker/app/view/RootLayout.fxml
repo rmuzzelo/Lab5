@@ -9,17 +9,19 @@
    <top>
       <MenuBar prefHeight="35.0" prefWidth="150.0">
         <menus>
-          <Menu mnemonicParsing="false" text="Game">
+          <Menu fx:id="mnuGame" mnemonicParsing="false" text="Game">
             <items>
-                  <RadioMenuItem mnemonicParsing="false" text="5 Card Joker Poker">
+                  <RadioMenuItem mnemonicParsing="false" text="5 Card Stud">
                      <toggleGroup>
                         <ToggleGroup fx:id="tglGames" />
                      </toggleGroup></RadioMenuItem>
-                  <RadioMenuItem mnemonicParsing="false" text="5 Card Wild Card Joker" toggleGroup="$tglGames" />
-                  <RadioMenuItem mnemonicParsing="false" text="5 Card Draw" toggleGroup="$tglGames" />
-                  <RadioMenuItem mnemonicParsing="false" text="7 Card Draw" toggleGroup="$tglGames" />
+                  <RadioMenuItem mnemonicParsing="false" text="5 Card Stud One Joker" toggleGroup="$tglGames" />
+                  <RadioMenuItem mnemonicParsing="false" text="5 Card Stud Two Joker" toggleGroup="$tglGames" />
                   <RadioMenuItem mnemonicParsing="false" text="Texas Hold'em" toggleGroup="$tglGames" />
                   <RadioMenuItem mnemonicParsing="false" text="Omaha" toggleGroup="$tglGames" />
+                  <RadioMenuItem mnemonicParsing="false" text="Deuces Wild" toggleGroup="$tglGames" />
+                  <RadioMenuItem mnemonicParsing="false" text="Aces and Eights" toggleGroup="$tglGames" />
+                  <RadioMenuItem mnemonicParsing="false" text="Seven Draw" toggleGroup="$tglGames" />
                   <RadioMenuItem mnemonicParsing="false" text="Close" toggleGroup="$tglGames" />
             </items>
           </Menu>
