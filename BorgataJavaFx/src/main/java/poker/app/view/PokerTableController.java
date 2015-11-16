@@ -1,6 +1,7 @@
 package poker.app.view;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import enums.eGame;
@@ -185,7 +186,6 @@ public class PokerTableController {
 		hBoxP2Cards.getChildren().clear();
 		hBoxP3Cards.getChildren().clear();
 		hBoxP4Cards.getChildren().clear();
-		HboxCommunityCards.getChildren().clear();
 		
 		
 		// Get the Rule, start the Game
@@ -200,15 +200,23 @@ public class PokerTableController {
 			GPPH.setPlayer(p);
 			GPPH.setHand(new Hand());
 			gme.addGamePlayPlayerHand(GPPH);
+			DealFaceDownCards(gme.getNbrOfCards(), p.getiPlayerPosition());
 		}
-
+		
+		GamePlayPlayerHand GPCH = new GamePlayPlayerHand();
+		GPCH.setGame(gme);
+		GPCH.setPlayer(PlayerCommon);
+		GPCH.setHand(new Hand());
+		gme.addGamePlayCommonHand(GPCH);
+		
 		// Add a deck to the game
 		gme.setGameDeck(new Deck());
 
 		btnDraw.setVisible(true);
 		iCardDrawn = 0;
-
-		String strCard = "/res/img/b1fv.png";
+		
+		//Initial attempt to set up face down cards
+		/*String strCard = "/res/img/b1fv.png";
 		for (Player p : mainApp.GetSeatedPlayers()){
 			HBox hboxplay = null;
 		
@@ -236,7 +244,7 @@ public class PokerTableController {
 		for (int s = 0; s < gme.getNbrOfComCards(); s++){
 			ImageView img = new ImageView(new Image(getClass().getResourceAsStream(strCard), 75, 75, true, true));	
 			HboxCommunityCards.getChildren().add(img);
-		}
+		}*/
 		
 
 		ImageView imgBottomCard = new ImageView(
@@ -376,13 +384,34 @@ public class PokerTableController {
 			btnDraw.setVisible(false);
 			for (Player p : mainApp.GetSeatedPlayers()) {
 				GamePlayPlayerHand GPPH = gme.FindPlayerGame(gme, p);
+				GamePlayPlayerHand GPCH = gme.FindPlayerGame(gme, PlayerCommon);
 				Hand PlayerHand = GPPH.getHand();
+				Hand CommonHand = GPCH.getHand();
 
 				switch (eEval) {
 				case Normal:
+					ArrayList<Hand> possible3 = ListHands(PlayerHand, CommonHand, eEvalType.Normal);
+
+					Collections.sort(possible3, Hand.HandRank);
+
+					Hand besthand3 = possible3.get(0);
+				break;
 				case Omaha:
+					ArrayList<Hand> possible2 = ListHands(PlayerHand, CommonHand, eEvalType.Omaha);
+
+					Collections.sort(possible2, Hand.HandRank);
+
+					Hand besthand2 = possible2.get(0);
+				break;
 				case TexasHoldEm:
+					ArrayList<Hand> possible = ListHands(PlayerHand, CommonHand, eEvalType.TexasHoldEm);
+
+					Collections.sort(possible, Hand.HandRank);
+
+					Hand besthand = possible.get(0);		
+				break;
 				case SevenCard:
+					//Not in this lab
 				}
 			}
 
@@ -510,6 +539,7 @@ public class PokerTableController {
 		
 	}
 	
+	//Initial switch statement attempts
 
 				/*switch(eGame.fromInt(mainApp.getiGameType())){
 					case FiveStud:

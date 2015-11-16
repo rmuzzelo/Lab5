@@ -78,5 +78,10 @@ public class GamePlay extends GamePlayDomainModel {
 		return this.rle;
 	}
 	
+	public void addGamePlayCommonHand(GamePlayPlayerHand GPCH)
+	{
+		GameCommonHand.add(GPCH);
+	}
+	
 	
 }
