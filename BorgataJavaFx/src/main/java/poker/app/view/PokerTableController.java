@@ -186,6 +186,7 @@ public class PokerTableController {
 		hBoxP2Cards.getChildren().clear();
 		hBoxP3Cards.getChildren().clear();
 		hBoxP4Cards.getChildren().clear();
+		HboxCommunityCards.getChildren().clear();
 		
 		
 		// Get the Rule, start the Game
@@ -213,6 +214,7 @@ public class PokerTableController {
 		gme.setGameDeck(new Deck());
 
 		btnDraw.setVisible(true);
+		btnPlay.setVisible(false);
 		iCardDrawn = 0;
 		
 		//Initial attempt to set up face down cards
@@ -265,11 +267,9 @@ public class PokerTableController {
 		case 2:
 			PlayerCardBox = hBoxP2Cards;
 			break;
-
 		case 3:
 			PlayerCardBox = hBoxP3Cards;
 			break;
-
 		case 4:
 			PlayerCardBox = hBoxP4Cards;
 			break;
@@ -387,6 +387,7 @@ public class PokerTableController {
 				GamePlayPlayerHand GPCH = gme.FindPlayerGame(gme, PlayerCommon);
 				Hand PlayerHand = GPPH.getHand();
 				Hand CommonHand = GPCH.getHand();
+				Hand besthand = null;
 
 				switch (eEval) {
 				case Normal:
@@ -394,21 +395,21 @@ public class PokerTableController {
 
 					Collections.sort(possible3, Hand.HandRank);
 
-					Hand besthand3 = possible3.get(0);
+					besthand = possible3.get(0);
 				break;
 				case Omaha:
 					ArrayList<Hand> possible2 = ListHands(PlayerHand, CommonHand, eEvalType.Omaha);
 
 					Collections.sort(possible2, Hand.HandRank);
 
-					Hand besthand2 = possible2.get(0);
+					besthand = possible2.get(0);
 				break;
 				case TexasHoldEm:
 					ArrayList<Hand> possible = ListHands(PlayerHand, CommonHand, eEvalType.TexasHoldEm);
 
 					Collections.sort(possible, Hand.HandRank);
 
-					Hand besthand = possible.get(0);		
+					besthand = possible.get(0);		
 				break;
 				case SevenCard:
 					//Not in this lab
