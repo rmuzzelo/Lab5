@@ -159,7 +159,7 @@ public class Hand extends HandDomainModel {
 	}
 	
 	
-	private void EvalHand() {
+	protected void EvalHand() {
 		// Evaluates if the hand is a flush and/or straight then figures out
 		// the hand's strength attributes
 

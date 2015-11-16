@@ -21,6 +21,8 @@ public class GamePlayDomainModel {
 	@XmlElement
 	private int NbrOfJokers;
 	@XmlElement
+	private int NbrOfComCards;
+	@XmlElement
 	private ArrayList<CardDomainModel> WildCards = new ArrayList<CardDomainModel>();
 	
 	public UUID GetGameID()
@@ -78,6 +80,14 @@ public class GamePlayDomainModel {
 
 	public void setNbrOfJokers(int nbrOfJokers) {
 		NbrOfJokers = nbrOfJokers;
+	}
+	
+	public int getNbrOfComCards() {
+		return NbrOfComCards;
+	}
+
+	public void setNbrOfComCards(int nbrOfComCards) {
+		NbrOfComCards = nbrOfComCards;
 	}
 
 	public ArrayList<CardDomainModel> getWildCards() {

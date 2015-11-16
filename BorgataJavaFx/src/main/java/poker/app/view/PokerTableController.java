@@ -1,5 +1,6 @@
 package poker.app.view;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import enums.eGame;
@@ -37,6 +38,8 @@ import pokerBase.GamePlayPlayerHand;
 import pokerBase.Hand;
 import pokerBase.Player;
 import pokerBase.Rule;
+import pokerEnums.eDrawAction;
+import pokerEnums.eEvalType;
 
 
 
@@ -51,6 +54,8 @@ public class PokerTableController {
 	private MainApp mainApp;
 	private GamePlay gme = null;
 	private int iCardDrawn = 0;
+	
+	private Player PlayerCommon = new Player("Common", 0);
 
 	@FXML
 	public AnchorPane APMainScreen;
@@ -177,20 +182,13 @@ public class PokerTableController {
 		
 		// Clear all players hands
 		hBoxP1Cards.getChildren().clear();
+		hBoxP2Cards.getChildren().clear();
+		hBoxP3Cards.getChildren().clear();
+		hBoxP4Cards.getChildren().clear();
+		HboxCommunityCards.getChildren().clear();
 		
 		
 		// Get the Rule, start the Game
-		/**eGame playrule = null;
-		if (mainApp.getiGameType() == 1){
-			playrule = eGame.FiveStud;
-		}
-		if (mainApp.getiGameType() == 5){
-			playrule = eGame.Omaha;
-		}
-		if (mainApp.getiGameType() == 4){
-			playrule = eGame.TexasHoldEm;
-		}
-		//Rule rle = new Rule(eGame.fromInt(mainApp.getiGameType()));**/
 		Rule rle = new Rule(eGame.fromInt(mainApp.getiGameType()));
 		gme = new GamePlay(rle);
 
@@ -232,12 +230,14 @@ public class PokerTableController {
 
 			for (int i = 0; i < gme.getNbrOfCards(); i++) {
 				ImageView img = new ImageView(new Image(getClass().getResourceAsStream(strCard), 75, 75, true, true));	
-
 				hboxplay.getChildren().add(img);
-			
+			}
 		}
-
+		for (int s = 0; s < gme.getNbrOfComCards(); s++){
+			ImageView img = new ImageView(new Image(getClass().getResourceAsStream(strCard), 75, 75, true, true));	
+			HboxCommunityCards.getChildren().add(img);
 		}
+		
 
 		ImageView imgBottomCard = new ImageView(
 				new Image(getClass().getResourceAsStream("/res/img/b2fh.png"), 75, 75, true, true));
@@ -247,99 +247,346 @@ public class PokerTableController {
 
 	}
 	
+	public void DealFaceDownCards(int nbrOfCards, int iPlayerPosition) {
+		HBox PlayerCardBox = null;
+
+		switch (iPlayerPosition) {
+		case 1:
+			PlayerCardBox = hBoxP1Cards;
+			break;
+		case 2:
+			PlayerCardBox = hBoxP2Cards;
+			break;
+
+		case 3:
+			PlayerCardBox = hBoxP3Cards;
+			break;
+
+		case 4:
+			PlayerCardBox = hBoxP4Cards;
+			break;
+
+		}
+		String strCard = "/res/img/b1fv.png";
+
+		for (int i = 0; i < nbrOfCards; i++) {
+			ImageView img = new ImageView(new Image(getClass().getResourceAsStream(strCard), 75, 75, true, true));
+			PlayerCardBox.getChildren().add(img);
+		}
+	}
+	
 
 	@FXML
 	private void handleDraw() {
 		iCardDrawn++;
+		eDrawAction eDrawAction = null;
+		boolean bEvalHand = false;
+		eEvalType eEval = null;
 
-		//  Disable the button in case of double-click
+		// Disable the button in case of double-click
 		btnDraw.setDisable(true);
 		
-		// Draw a card for each player seated
-		for (Player p : mainApp.GetSeatedPlayers()) {
-			Card c = gme.getGameDeck().drawFromDeck();
-
-			if (p.getiPlayerPosition() < 5) {
-				GamePlayPlayerHand GPPH = gme.FindPlayerGame(gme, p);
-				GPPH.addCardToHand(c);
-				
-				HBox hboxplay = null;
-				
-				if(p.getiPlayerPosition() == 1){
-					hboxplay = hBoxP1Cards;
-				}
-				
-				else if(p.getiPlayerPosition() == 2){
-					hboxplay = hBoxP2Cards;	
-				}
-				
-				else if(p.getiPlayerPosition() == 3){
-					hboxplay = hBoxP3Cards;	
-				}
-				
-				if(p.getiPlayerPosition() == 4){
-					hboxplay = hBoxP4Cards;	
-				}
-
-				//	This is the card that is going to be dealt to the player.
-				String strCard = "/res/img/" + c.getCardImg();
-				ImageView imgvCardDealt = new ImageView(new Image(getClass().getResourceAsStream(strCard), 96, 71, true, true));
-				
-				// imgvCardFaceDown - There's already a place holder card sitting in the player's hbox.  It's face down.  Find it
-				// and then determine it's bounds and top left hand handle. 				
-				ImageView imgvCardFaceDown = (ImageView) hboxplay.getChildren().get(iCardDrawn - 1);			
-				Bounds bndCardDealt = imgvCardFaceDown.localToScene(imgvCardFaceDown.getBoundsInLocal());
-				Point2D pntCardDealt = new Point2D(bndCardDealt.getMinX(), bndCardDealt.getMinY());
-				
-				//	imgvDealerDeck = the card in the common area, where dealer's card is located.  Find the boundary top left point.
-				ImageView imgvDealerDeck = (ImageView) HboxCommonArea.getChildren().get(0);
-				Bounds bndCardDeck = imgvDealerDeck.localToScene(imgvDealerDeck.getBoundsInLocal());
-				Point2D pntCardDeck = new Point2D(bndCardDeck.getMinX(), bndCardDeck.getMinY());
-
-				//	Add a sequential transition to the card (move, rotate)
-				SequentialTransition transMoveRotCard = createTransition(pntCardDeck, pntCardDealt);
-
-	
-				//	Add a parallel transition to the card (fade in/fade out).
-				final ParallelTransition transFadeCardInOut = createFadeTransition(imgvCardFaceDown, new Image(getClass().getResourceAsStream(strCard), 75, 75, true, true));
-
-				
-				transMoveRotCard.onFinishedProperty().set(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent actionEvent) {
-
-						//	get rid of the created card, run the fade in/fade out transition
-						//	This isn't going to fire until the transMoveRotCard is complete.
-						APMainScreen.getChildren().remove(imgTransCard);
-						transFadeCardInOut.play();
-						
-						//	Enable the draw button after the animation is done.
-						btnDraw.setDisable(false);
-				}
-				});
-
-				transMoveRotCard.play();
-
-
-				//	This is hard coded for five card stud... what to do AFTER the fifth card is dealt...  this should probably change to
-				//  a switch statement (switching on game played, card #, etc).
-				if (iCardDrawn == 5) {
-					Hand h = GPPH.getHand();
-					h = Hand.EvalHand(h);
-					GPPH.setHand(h);
-					System.out.println(GPPH.getHand().getHandStrength());
-				}
+		if ((gme.getRule().GetGame() == eGame.FiveStud) || (gme.getRule().GetGame() == eGame.AcesAndEights)
+				|| (gme.getRule().GetGame() == eGame.DeucesWild) || (gme.getRule().GetGame() == eGame.FiveStudOneJoker)
+				|| (gme.getRule().GetGame() == eGame.FiveStudTwoJoker)) {
+			eEval = eEvalType.Normal;
+			if ((iCardDrawn >= 1) && (iCardDrawn <= 5)) {
+				eDrawAction = eDrawAction.DrawPlayer;
+			} else if (iCardDrawn == 5) {
+				bEvalHand = true;
 			}
 		}
 
-		if (iCardDrawn == 5) {
+		if ((gme.getRule().GetGame() == eGame.Omaha)) {
+			eEval = eEvalType.Omaha;
+			if ((iCardDrawn >= 1) && (iCardDrawn <= 4)) {
+				eDrawAction = eDrawAction.DrawPlayer;
+			}
+			if ((iCardDrawn > 4) && (iCardDrawn <= 9)) {
+				eDrawAction = eDrawAction.DrawCommon;
+			} else if (iCardDrawn == 9) {
+				bEvalHand = true;
+			}
+		}
 
+		if ((gme.getRule().GetGame() == eGame.TexasHoldEm)) {
+			eEval = eEvalType.TexasHoldEm;
+			if ((iCardDrawn >= 1) && (iCardDrawn <= 2)) {
+				eDrawAction = eDrawAction.DrawPlayer;
+			}
+			if ((iCardDrawn > 2) && (iCardDrawn <= 7)) {
+				eDrawAction = eDrawAction.DrawCommon;
+			}
+			if (iCardDrawn == 7) {
+				bEvalHand = true;
+			}
+		}
+
+		if ((gme.getRule().GetGame() == eGame.SevenDraw)) {
+			eEval = eEvalType.SevenCard;
+			if ((iCardDrawn >= 1) && (iCardDrawn <= 7)) {
+				eDrawAction = eDrawAction.DrawPlayer;
+			}
+			if (iCardDrawn == 7) {
+				bEvalHand = true;
+			}
+		}
+
+		if (eDrawAction == eDrawAction.DrawPlayer) {
+
+			// Draw a card for each player seated
+			for (Player p : mainApp.GetSeatedPlayers()) {
+				Card c = gme.getGameDeck().drawFromDeck();
+
+				HBox PlayerCardBox = null;
+
+				switch (p.getiPlayerPosition()) {
+				case 1:
+					PlayerCardBox = hBoxP1Cards;
+					break;
+				case 2:
+					PlayerCardBox = hBoxP2Cards;
+					break;
+
+				case 3:
+					PlayerCardBox = hBoxP3Cards;
+					break;
+
+				case 4:
+					PlayerCardBox = hBoxP4Cards;
+					break;
+
+				}
+				GamePlayPlayerHand GPPH = gme.FindPlayerGame(gme, p);
+				GPPH.addCardToHand(c);
+				PerformTransitions(c, PlayerCardBox);
+			}
+
+		}
+		else if (eDrawAction == eDrawAction.DrawCommon)
+		{
+			Card c = gme.getGameDeck().drawFromDeck();
+			GamePlayPlayerHand GPCH = gme.FindPlayerGame(gme, PlayerCommon);
+			GPCH.addCardToHand(c);
+			PerformTransitions(c, HboxCommunityCards);
+		}
+
+		// If bEvalHand is true, it's time to evaluate the Hand...
+		if (bEvalHand) {
 			btnDraw.setVisible(false);
+			for (Player p : mainApp.GetSeatedPlayers()) {
+				GamePlayPlayerHand GPPH = gme.FindPlayerGame(gme, p);
+				Hand PlayerHand = GPPH.getHand();
+
+				switch (eEval) {
+				case Normal:
+				case Omaha:
+				case TexasHoldEm:
+				case SevenCard:
+				}
+			}
+
 		}
 		
+	}
+	
+	public ArrayList<Hand> ListHands(Hand PlayerHand, Hand CommonHand, eEvalType eEval)
+	{
+		
+		ArrayList<Hand> CombinHands = new ArrayList<Hand>();
+		
+		switch (eEval) {
+		case Normal:
+			CombinHands.add(PlayerHand);
+			break;
+		case Omaha:
+			ArrayList<Card> cards2 = new ArrayList<Card>();
+			int iDrawFromCommunity2 = 0;
+			// Player has 2 cards.  To determine the combinations, we'll have to pull zero from player, then each card, then both cards
+			//		the rest of the cards are going to come from the common cards.
+			
+			for (int iPlayerCard = 0; iPlayerCard < 9; iPlayerCard++)
+			{
+				switch (iPlayerCard)
+				{
+				case 0:
+					//	This means pull zero cards from player, all cards from community
+					iDrawFromCommunity2 = 5;
+					break;
+				case 1:
+					//	This means pull first card from player, four cards from community
+					iDrawFromCommunity2 = 4;
+					cards2.add((Card) PlayerHand.getCards().get(0));
+					break;
+				case 2:
+					//	This means pull second card from player, four cards from community
+					iDrawFromCommunity2 = 4;
+					cards2.add((Card) PlayerHand.getCards().get(1));
+					break;
+				case 3:
+					//	This means pull first and second card from player, three cards from community
+					iDrawFromCommunity2 = 3;
+					cards2.add((Card) PlayerHand.getCards().get(1));
+					cards2.add((Card) PlayerHand.getCards().get(2));
+					break;
+				case 4:
+				//second and third card
+					iDrawFromCommunity2 = 3;
+					cards2.add((Card) PlayerHand.getCards().get(2));
+					cards2.add((Card) PlayerHand.getCards().get(3));
+					break;
+				case 5:
+				//first and third
+					iDrawFromCommunity2 = 3;
+					cards2.add((Card) PlayerHand.getCards().get(1));
+					cards2.add((Card) PlayerHand.getCards().get(3));
+					break;
+				case 6:
+				//first and fourth
+					iDrawFromCommunity2 = 3;
+					cards2.add((Card) PlayerHand.getCards().get(1));
+					cards2.add((Card) PlayerHand.getCards().get(4));
+					break;
+				case 7:
+					//second and fourth
+					iDrawFromCommunity2 = 3;
+					cards2.add((Card) PlayerHand.getCards().get(2));
+					cards2.add((Card) PlayerHand.getCards().get(4));
+					break;
+				case 8:
+					//third and fourth
+					iDrawFromCommunity2 = 3;
+					cards2.add((Card) PlayerHand.getCards().get(3));
+					cards2.add((Card) PlayerHand.getCards().get(4));
+					break;
+				}
+			}
+		case TexasHoldEm:
+			ArrayList<Card> cards = new ArrayList<Card>();
+			int iDrawFromCommunity = 0;
+			// Player has 2 cards.  To determine the combinations, we'll have to pull zero from player, then each card, then both cards
+			//		the rest of the cards are going to come from the common cards.
+			
+			for (int iPlayerCard = 0; iPlayerCard < 4; iPlayerCard++)
+			{
+				switch (iPlayerCard)
+				{
+				case 0:
+					//	This means pull zero cards from player, all cards from community
+					iDrawFromCommunity = 5;
+					break;
+				case 1:
+					//	This means pull first card from player, four cards from community
+					iDrawFromCommunity = 4;
+					cards.add((Card) PlayerHand.getCards().get(0));
+					break;
+				case 2:
+					//	This means pull second card from player, four cards from community
+					iDrawFromCommunity = 4;
+					cards.add((Card) PlayerHand.getCards().get(1));
+					break;
+				case 3:
+					//	This means pull first and second card from player, three cards from community
+					iDrawFromCommunity = 3;
+					cards.add((Card) PlayerHand.getCards().get(1));
+					cards.add((Card) PlayerHand.getCards().get(2));
+					break;
+				}
+			}
+			
+			
+			
+			
+		case SevenCard:
+		}
+		
+		for (Hand h: CombinHands)
+		{
+			h = Hand.EvalHand(h);
+		}
+		
+		return CombinHands;
+
+		
+	}
+	
+
+				/*switch(eGame.fromInt(mainApp.getiGameType())){
+					case FiveStud:
+						if (iCardDrawn == 5) {
+							Hand h = GPPH.getHand();
+							h = Hand.EvalHand(h);
+							GPPH.setHand(h);
+							System.out.println(GPPH.getHand().getHandStrength());
+						}
+					
+						if (iCardDrawn == 5) {
+
+							btnDraw.setVisible(false);
+						}
+						break;
+					case TexasHoldEm:
+						//ArrayList<Card> CommunityCard=new ArrayList<Card>();
+						switch(iCardDrawn){
+							case 2:
+								gme.getGameDeck().drawFromDeck();
+								for(int i=1; i<=3; i++){
+									Card x=gme.getGameDeck().drawFromDeck();
+									CommunityCard.add(x);
+									String strCardcom = "/res/img/" + x.getCardImg();
+									ImageView imgComCard = (ImageView) HboxCommunityCards.getChildren().get(iCardDrawn - 2);
+									final ParallelTransition transFadeComCardInOut = createFadeTransition(imgComCard, new Image(getClass().getResourceAsStream(strCardcom), 75, 75, true, true));
+									//iCardDrawn++;
+								}
+							break;
+							case 5:
+								for (int t=1; t<=2; t++){
+									Card x=gme.getGameDeck().drawFromDeck();
+									CommunityCard.add(x);
+									String strCardcom = "/res/img/" + x.getCardImg();
+									ImageView imgComCard = (ImageView) HboxCommunityCards.getChildren().get(iCardDrawn - 2);
+									final ParallelTransition transFadeComCardInOut = createFadeTransition(imgComCard, new Image(getClass().getResourceAsStream(strCardcom), 75, 75, true, true));
+									//iCardDrawn++;
+								}
+							break;
+							case 7:
+									ArrayList<Card> CardsInHand1 = new ArrayList<Card>();
+									CardsInHand1.add(GPPH.getHand().GetCardFromHand(0));
+									CardsInHand1.add(GPPH.getHand().GetCardFromHand(1));
+									Hand bestHand = GPPH.TexasHands(CommunityCard,CardsInHand1);
+									System.out.println(bestHand.getHandStrength());
+
+									btnDraw.setVisible(false);
+								
+							break;
+						}
+						break;
+					case Omaha:
+						//getting there
+						break;
+					case SevenDraw:
+						//not yet
+						break;
+					case FiveStudOneJoker:
+						//not yet
+						break;
+					case FiveStudTwoJoker:
+						//not yet
+						break;
+					case DeucesWild:
+						//not yet
+						break;
+					case AcesAndEights:
+						//not yet
+						break;
+					
+			}
+			}
+		}
+	
 		
 
-	}
+	}*/
 
 	
 	
@@ -348,7 +595,57 @@ public class PokerTableController {
 	
 	
 	
-	
+	private void PerformTransitions(Card c, HBox PlayerCardBox)
+	{
+		// This is the card that is going to be dealt to the player.
+		String strCard = "/res/img/" + c.getCardImg();
+		ImageView imgvCardDealt = new ImageView(
+				new Image(getClass().getResourceAsStream(strCard), 96, 71, true, true));
+
+		// imgvCardFaceDown - There's already a place holder card
+		// sitting in
+		// the player's hbox. It's face down. Find it
+		// and then determine it's bounds and top left hand handle.
+		ImageView imgvCardFaceDown = (ImageView) PlayerCardBox.getChildren().get(iCardDrawn - 1);
+		Bounds bndCardDealt = imgvCardFaceDown.localToScene(imgvCardFaceDown.getBoundsInLocal());
+		Point2D pntCardDealt = new Point2D(bndCardDealt.getMinX(), bndCardDealt.getMinY());
+
+		// imgvDealerDeck = the card in the common area, where dealer's
+		// card
+		// is located. Find the boundary top left point.
+		ImageView imgvDealerDeck = (ImageView) HboxCommonArea.getChildren().get(0);
+		Bounds bndCardDeck = imgvDealerDeck.localToScene(imgvDealerDeck.getBoundsInLocal());
+		Point2D pntCardDeck = new Point2D(bndCardDeck.getMinX(), bndCardDeck.getMinY());
+
+		// Add a sequential transition to the card (move, rotate)
+		SequentialTransition transMoveRotCard = createTransition(pntCardDeck, pntCardDealt);
+
+		// Add a parallel transition to the card (fade in/fade out).
+		final ParallelTransition transFadeCardInOut = createFadeTransition(imgvCardFaceDown,
+				new Image(getClass().getResourceAsStream(strCard), 75, 75, true, true));
+/*		transFadeCardInOut.onFinishedProperty().set(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent actionEvent) {
+			}
+		});*/
+
+		transMoveRotCard.onFinishedProperty().set(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent actionEvent) {
+
+				// get rid of the created card, run the fade in/fade out
+				// transition
+				// This isn't going to fire until the transMoveRotCard
+				// is
+				// complete.
+				APMainScreen.getChildren().remove(imgTransCard);
+				transFadeCardInOut.play();
+
+				// Enable the draw button after the animation is done.
+				btnDraw.setDisable(false);
+			}
+		});
+	}
 	
 	
 	

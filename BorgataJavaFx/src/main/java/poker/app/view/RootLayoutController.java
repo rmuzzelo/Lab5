@@ -46,6 +46,25 @@ public class RootLayoutController implements Initializable {
             }            
           });
         
+      //Sets Game Type for 5 Card Stud One Joker
+        RadioMenuItem item2 = (RadioMenuItem) mnuGame.getItems().get(1);
+        item2.selectedProperty().addListener(new ChangeListener(){
+            @Override
+            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+            	mainApp.setiGameType(2);              
+            }            
+        });
+        
+       //Sets Game Type for 5 Card Two Joker
+      	RadioMenuItem item3 = (RadioMenuItem) mnuGame.getItems().get(2);
+        item3.selectedProperty().addListener(new ChangeListener(){
+             @Override
+             public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+            	 mainApp.setiGameType(3);              
+             }            
+        });
+              
+        
         //Sets Game Type for Texas Hold'em
       	RadioMenuItem item4 = (RadioMenuItem) mnuGame.getItems().get(3);
         item4.selectedProperty().addListener(new ChangeListener(){
@@ -61,6 +80,33 @@ public class RootLayoutController implements Initializable {
         	@Override
         	public void changed(ObservableValue arg0, Object arg1, Object arg2) {
         		mainApp.setiGameType(5);              
+            }            
+         });
+        
+      //Sets Game Type for Deuces Wild
+      	RadioMenuItem item6 = (RadioMenuItem) mnuGame.getItems().get(5);
+        item6.selectedProperty().addListener(new ChangeListener(){
+            @Override
+             public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+            	mainApp.setiGameType(6);              
+             }            
+         });
+        
+      //Sets Game Type for Aces and Eights
+      	RadioMenuItem item7 = (RadioMenuItem) mnuGame.getItems().get(6);
+        item7.selectedProperty().addListener(new ChangeListener(){
+        	@Override
+            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+        		mainApp.setiGameType(7);              
+            }            
+         });
+        
+      //Sets Game Type for Seven Draw
+      	RadioMenuItem item8 = (RadioMenuItem) mnuGame.getItems().get(7);
+        item8.selectedProperty().addListener(new ChangeListener(){
+        	@Override
+            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+        		mainApp.setiGameType(8);              
             }            
          });
 		

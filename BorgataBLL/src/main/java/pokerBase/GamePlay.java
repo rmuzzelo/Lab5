@@ -1,6 +1,7 @@
 package pokerBase;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -10,13 +11,15 @@ import javax.xml.bind.annotation.XmlType;
 import domain.DeckDomainModel;
 import domain.GamePlayDomainModel;
 import domain.RuleDomainModel;
+import pokerBase.Hand;
 
 public class GamePlay extends GamePlayDomainModel {
 
 	private ArrayList<Player> GamePlayers = new ArrayList<Player>();
 	private ArrayList<GamePlayPlayerHand> GamePlayerHand = new ArrayList<GamePlayPlayerHand>();
-	
+	private ArrayList<GamePlayPlayerHand> GameCommonHand = new ArrayList<GamePlayPlayerHand>();
 	private Deck GameDeck = null;
+	private Rule rle;
 	
 	public GamePlay(Rule rle)
 	{
@@ -25,6 +28,9 @@ public class GamePlay extends GamePlayDomainModel {
 		this.setMaxNbrOfPlayers(rle.GetMaxNumberOfPlayers());
 		this.setNbrOfJokers(rle.GetNumberOfJokers());
 		this.setWildCards(rle.GetRuleCards());
+		this.setNbrOfComCards(rle.GetCommunityCardsCount());
+		this.rle = rle;
+
 	}
 
 	public ArrayList<Player> getGamePlayers() {
@@ -65,6 +71,11 @@ public class GamePlay extends GamePlayDomainModel {
 			}
 		}
 		return GPPHReturn;
+	}
+	
+	public Rule getRule()
+	{
+		return this.rle;
 	}
 	
 	

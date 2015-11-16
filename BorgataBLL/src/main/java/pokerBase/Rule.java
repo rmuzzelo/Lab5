@@ -13,6 +13,7 @@ public class Rule {
 	private int NumberOfCards;
 	private int NumberOfJokers;
 	private int CommunityCards;
+	private eGame Game;
 	private ArrayList<CardDomainModel> RuleCards = new ArrayList<CardDomainModel>();
 
 	public Rule(eGame gme) {
@@ -108,5 +109,9 @@ public class Rule {
 	public ArrayList<CardDomainModel> GetRuleCards()
 	{
 		return this.RuleCards;
+	}
+	public eGame GetGame()
+	{
+		return this.Game;
 	}
 }
